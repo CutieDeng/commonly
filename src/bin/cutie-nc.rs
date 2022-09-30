@@ -1,4 +1,4 @@
-use std::{net::{SocketAddrV4, Ipv4Addr, TcpStream}, io::{stdin, Write, Read}, fs::File};
+use std::{net::{SocketAddrV4, Ipv4Addr, TcpStream}, io::{stdin, Write, Read}, fs::File, time::Duration};
 
 fn main() {
     let mut connect_config = Box::new(ConnectConfig { target: None, }); 
@@ -49,6 +49,7 @@ fn main() {
                         ); 
                         match new_stream {
                             Ok(n) => {
+                                n.set_read_timeout(Some(Duration::from_secs(1))).unwrap(); 
                                 connect_config.target = Some(n); 
                                 println!("[-] connect build. "); 
                             },
@@ -121,14 +122,21 @@ struct ConnectConfig {
 }
 
 fn tcp_read_simple(value: &mut TcpStream, cache: &mut [u8]) {
-    match value.read(cache.as_mut()) {
-        Ok(s) => {
-            println!("[-] info: read replies from server. "); 
-            let c = String::from_utf8_lossy(&cache[..s]); 
-            println!("{}", c); 
-        },
-        Err(e) => {
-            println!("[-] info: read failure - {:?}", e)
-        },
-    } 
+    let mut continue_flag = true; 
+    while continue_flag {
+        match value.read(cache.as_mut()) {
+            Ok(s) => {
+                if s < cache.len() {
+                    continue_flag = false; 
+                }
+                println!("[-] info: read replies from server. "); 
+                let c = String::from_utf8_lossy(&cache[..s]); 
+                println!("{}", c); 
+            },
+            Err(e) => {
+                continue_flag = false; 
+                println!("[-] info: read failure - {:?}", e)
+            },
+        } 
+    }
 }
