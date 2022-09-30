@@ -1,0 +1,11 @@
+tutorial: cutie-nc is an interactive executable. 
+usage: 
+{special commands} (a blank){ the content should input }
+now only four commands support: 
+help : content needn't, for display this page. 
+(nothing but then a blank): read the content and send to the server (with the '\n' you input. )
+file : read the content, then open the related file. read the bytes from specific file and send to the server. (without the extra '\n' )
+connect : connect the the server, with ipv4 & tcp protocol. 
+    example: 
+    - connect 192 168 0 1 25535: connect the host (192.168.0.1:25535). 
+exit: exit the program.  

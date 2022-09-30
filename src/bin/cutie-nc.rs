@@ -1,7 +1,6 @@
 use std::{net::{SocketAddrV4, Ipv4Addr, TcpStream}, io::{stdin, Write, Read}, fs::File};
 
 fn main() {
-    // SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(a, b, c, d), port))
     let mut connect_config = Box::new(ConnectConfig { target: None, }); 
     let mut input = String::new(); 
     let mut cache = Box::new([0u8; 1024]); 
@@ -84,7 +83,7 @@ fn main() {
                             tcp_read_simple(tcp_stream, cache.as_mut_slice()); 
                         },
                         Err(e) => {
-                            println!("\x1b[31;1m[e] error: file open failure - {:?}", e); 
+                            println!("\x1b[31;1m[e] error: file open failure - {:?}\x1b[0m", e); 
                         },
                     }
                 }
@@ -104,6 +103,12 @@ fn main() {
                 }
                 None => println!("\x1b[31;1m[e] error: invalid status for sending info, because connection doesn't exist. \x1b[0m"), 
             }
+        } else if input.starts_with("help") {
+            println!("cutie-nc, version {}\n", env!("CARGO_PKG_VERSION")); 
+            println!("{}", include_str!("my-docs/cutie-nc-tutorial.txt")); 
+        } else if input.starts_with("exit") {
+            println!("exit. "); 
+            break 
         } else {
             println!("\x1b[33;1m{}{}\x1b[0m", "[!] warning: unexpected format for the raw str input: ", input.trim_end())
         }
