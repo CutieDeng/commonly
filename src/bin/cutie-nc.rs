@@ -5,6 +5,7 @@ fn main() {
     let mut input = String::new(); 
     let mut cache = Box::new([0u8; 1024]); 
     loop {
+        input.clear(); 
         stdin().read_line(&mut input).unwrap(); 
         if input.starts_with("connect ") {
             let mut values = [0u16; 5]; 
@@ -61,7 +62,17 @@ fn main() {
                     }
                 }
             }
-        // } else if input.starts_with("uconnect ") { 
+        } else if let Some (input) = input.strip_prefix("connect2 ") {
+            let input = input.trim_end();
+            let tcp_stream = TcpStream::connect(input); 
+            match tcp_stream {
+                Ok(t) => {
+                    *connect_config = ConnectConfig::Tcp(t); 
+                },
+                Err(e) => {
+                    println!("\x1b[31;1m[e] error {:?}\x1b[0m", e); 
+                },
+            }
         } else if let Some(input) = input.strip_prefix("uconnect ") { 
             let others = input.trim_end();
             let u = UdpSocket::bind("0.0.0.0:0").unwrap();
@@ -166,7 +177,6 @@ fn main() {
         } else {
             println!("\x1b[33;1m{}{}\x1b[0m", "[!] warning: unexpected format for the raw str input: ", input.trim_end())
         }
-        input.clear(); 
     }
 }
 

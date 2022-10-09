@@ -8,4 +8,10 @@ file : read the content, then open the related file. read the bytes from specifi
 connect : connect the the server, with ipv4 & tcp protocol. 
     example: 
     - connect 192 168 0 1 25535: connect the host (192.168.0.1:25535). 
+connect2 : connect to the server, similar to 'connect', but just directly use the dot split format. 
+    example: 
+    - connect2 192.168.0.1:25535: connect the host ... 
+uconnect : connect to the server, with udp protocol. 
+    example: 
+    - uconnect localhost:80 : connect the host (localhost:80)
 exit: exit the program.  
