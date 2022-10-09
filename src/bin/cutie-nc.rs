@@ -67,6 +67,7 @@ fn main() {
             let tcp_stream = TcpStream::connect(input); 
             match tcp_stream {
                 Ok(t) => {
+                    t.set_read_timeout(Some(Duration::from_secs(1))).unwrap(); 
                     *connect_config = ConnectConfig::Tcp(t); 
                 },
                 Err(e) => {
